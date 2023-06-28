@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { DbzService } from '../services/dbz.service';
 import { Character } from '../interfaces/character.interface';
 
 @Component({
@@ -8,28 +9,21 @@ import { Character } from '../interfaces/character.interface';
 })
 
 export class MainPageComponent{
-  public characters: Character[]=[{
-    name: 'Krillin',
-    power: 1000
-  },{
-    name: 'Goku',
-    power: 9500
-  },
-  {
-    name: 'Vegeta',
-    power: 7500
-  }];
 
-onNewCharacter( character: Character ):void {
- this.characters.push(character);
-  // console.log('MainPage');
-  // console.log(character)
-}
+  constructor(private dbzService: DbzService){}
 
-//recibir, escucha al event emitter
-onDeleteCharacter (index: number){
-  this.characters.splice(index, 1); //remover basado en el indice
-  console.log(index)
+  //crear getes y set por servicio privado
+  get character(): Character[] {
+    //... para no modificar la data del servicio
+    return [...this.dbzService.characters];
   }
 
+  //que hacer cuando se elimine personaje
+  onDeleteCharacter( id: string ): void {
+    this.dbzService.deleteCharacterById(id);
+  }
+
+  onNewCharacter( character: Character):void{
+    this.dbzService.addCharacter(character)
+  }
 }
